@@ -1,0 +1,119 @@
+body{
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* split screen to left and right parts */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  background-color: white;
+  border-right: 1px solid #CCCCCC;
+}
+
+.right {
+  right: 0;
+  background-color: white;
+}
+/*========================================*/
+
+.submit{
+    background-color: #6BA3E8;
+}
+
+.center-column{
+    width:800px;
+    margin: 5px auto;
+    padding: 5px;
+}
+
+.item-row{
+    margin: 10px;
+    padding: 15px;
+    border-radius: 3px;
+    color: #3B3B3B;
+    font-size: 14px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.btn-main {
+  background-color: white;
+  border: .1px solid #CCCCCC;
+  border-radius: 30px;
+  color: #3B3B3B;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+}
+
+.btn-main:hover {
+  color: black;
+  border: .1px solid black;
+}
+
+.btn-pass {
+    border-color: #00A115;
+    color: #00A115;
+}
+
+.btn-pass:hover {
+    border-color: #00590C;
+    color: #00590C;
+}
+
+.btn-fail {
+    border-color: #D90065;
+    color: #D90065;
+}
+
+.btn-fail:hover {
+    border-color: #85003E;
+    color: #85003E;
+}
+
+.flexbox {
+  display: flex;
+
+}
+
+.flex-title {
+  flex: 0 0 500px;
+  align-self: center;
+}
+
+
+
+.btn-run {
+    width: 100px;
+    display: inline-block;
+}
+
+.btn-log {
+    width: 100px;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+hr.split-title {
+  border-top: 1px solid #CCCCCC;
+}
+
+.log-details {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+}
+
+.log-details-fail {
+    color: #D90065;
+}
