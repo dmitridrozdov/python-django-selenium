@@ -72,17 +72,23 @@ def create_failed_passed_test(title):
 
 
 def cleartests(request):
-    Task.objects.all().update(result='', log='')
+    Task.objects.all().update(result='', log='', active=False)
     return render(request, 'tasks/list.html', {'tasks': Task.objects.all()})
 
 
 def update_tests(test_name, test_result):
-    Task.objects.filter(test_name=test_name).update(result=test_result.result, log=test_result.log)
+    Task.objects.all().update(active=False)
+    Task.objects.filter(test_name=test_name).update(result=test_result.result, log=test_result.log, active=True)
+
+
+def show_log(test_name):
+    Task.objects.all().update(active=False)
+    Task.objects.filter(test_name=test_name).update(active=True)
+    return Task.objects.get(test_name=test_name)
 
 
 def index(request):
     tasks = Task.objects.all()
-    latest_title = ''
     test_result = TestResult('', '', '')
 
     if request.GET.get('runtest1'):
@@ -104,13 +110,13 @@ def index(request):
         update_tests('runtest3', test_result)
 
     if request.GET.get('runtest1Log'):
-        test_result = Task.objects.get(test_name='runtest1')
+        test_result = show_log('runtest1')
 
     if request.GET.get('runtest2Log'):
-        test_result = Task.objects.get(test_name='runtest2')
+        test_result = show_log('runtest2')
 
     if request.GET.get('runtest3Log'):
-        test_result = Task.objects.get(test_name='runtest3')
+        test_result = show_log('runtest3')
 
     context = {'tasks': tasks, 'test_result': test_result}
     return render(request, 'tasks/list.html', context)

@@ -1,4 +1,4 @@
-body{
+body {
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -25,23 +25,26 @@ body{
 }
 /*========================================*/
 
-.submit{
+.submit {
     background-color: #6BA3E8;
 }
 
-.center-column{
+.center-column {
     width:800px;
     margin: 5px auto;
     padding: 5px;
 }
 
-.item-row{
+.item-row {
     margin: 10px;
-    padding: 15px;
-    border-radius: 3px;
+    padding: 10px;
     color: #3B3B3B;
     font-size: 14px;
-    border-bottom: 1px solid #CCCCCC;
+    border-bottom: 1px solid #E8E8E8;
+}
+
+.item-row-active {
+    background-color: #F2F2F2;
 }
 
 .btn-main {
@@ -91,8 +94,6 @@ body{
   flex: 0 0 500px;
   align-self: center;
 }
-
-
 
 .btn-run {
     width: 100px;

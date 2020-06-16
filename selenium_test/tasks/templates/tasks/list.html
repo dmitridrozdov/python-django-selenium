@@ -13,7 +13,7 @@
 <div class="split left">
     <div class="center-column">
         {% for task in tasks %}
-        <form method="get" class="item-row">
+        <form method="get" class="item-row {% if task.active == True %} item-row-active {% endif %}">
             <div class="flexbox">
                 <span class="flex-title">{{task.title}}</span>
                 {% if task.result == "" %}
@@ -37,15 +37,9 @@
     <div class="center-column">
         <h4>{{test_result.title}}</h4>
         <hr class="split-title">
-        {% if test_result.result == "Pass" %}
-            <div class="log-details">
+            <div class="log-details {% if test_result.result == 'Fail' %} log-details-fail {% endif %}">
                 {{test_result.log}}
             </div>
-        {% else %}
-            <div class="log-details log-details-fail">
-                {{test_result.log}}
-            </div>
-        {% endif %}
     </div>
 </div>
 
