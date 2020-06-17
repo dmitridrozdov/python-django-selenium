@@ -1,5 +1,6 @@
 body {
     font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
 }
 
 /* split screen to left and right parts */
@@ -10,7 +11,6 @@ body {
   z-index: 1;
   top: 0;
   overflow-x: hidden;
-  padding-top: 20px;
 }
 
 .left {
@@ -20,10 +20,12 @@ body {
 }
 
 .right {
+  padding-top: 20px;
   right: 0;
   background-color: white;
 }
 /*========================================*/
+
 
 .submit {
     background-color: #6BA3E8;
@@ -35,16 +37,25 @@ body {
     padding: 5px;
 }
 
-.item-row {
+.item-row-main {
     margin: 10px;
     padding: 10px;
     color: #3B3B3B;
     font-size: 14px;
+}
+
+.item-row-logo {
+  overflow: auto;
+  background-color: #5E5E5E;
+  color: white;
+}
+
+.item-row-test {
     border-bottom: 1px solid #E8E8E8;
 }
 
 .item-row-active {
-    background-color: #F2F2F2;
+    border: 1px solid #858585;
 }
 
 .btn-main {
@@ -58,6 +69,10 @@ body {
   display: inline-block;
   font-size: 12px;
   margin: 4px 2px;
+}
+
+.btn-main:focus{
+ outline:none;
 }
 
 .btn-main:hover {
@@ -85,16 +100,6 @@ body {
     color: #85003E;
 }
 
-.flexbox {
-  display: flex;
-
-}
-
-.flex-title {
-  flex: 0 0 500px;
-  align-self: center;
-}
-
 .btn-run {
     width: 100px;
     display: inline-block;
@@ -104,6 +109,58 @@ body {
     width: 100px;
     margin-left: 10px;
     text-decoration: none;
+}
+
+
+
+
+.btn-main-logo {
+  background-color: #5E5E5E;
+  border: .1px solid white;
+  border-radius: 30px;
+  color: #3B3B3B;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  margin: 4px 2px;
+}
+
+.btn-main-logo:focus{
+ outline:none;
+}
+
+.btn-main-logo:hover {
+  color: white;
+  border: .1px solid grey;
+}
+
+
+
+
+.flexbox {
+  display: flex;
+}
+
+.flex-title {
+  flex: 0 0 500px;
+  align-self: center;
+}
+
+.flexbox-logo {
+  display: flex;
+  font-family: 'Special Elite', cursive;
+  font-size: 30px;
+  padding: 10px;
+  padding-left: 50px;
+}
+
+.flex-title-logo {
+  flex: 0 0 497px;
+  align-self: center;
 }
 
 hr.split-title {

@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -6,14 +7,22 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
 
 <div class="split left">
+    <form method="get" class="item-row-logo">
+        <div class="flexbox-logo">
+            <span class="flex-title-logo">Shooxx!</span>
+            <input class="btn-main-logo btn-run" value="Clear results" type="submit" name="clear">
+            <input class="btn-main-logo" value="Execute all tests" type="submit" name="runall">
+        </div>
+     </form>
     <div class="center-column">
         {% for task in tasks %}
-        <form method="get" class="item-row {% if task.active == True %} item-row-active {% endif %}">
+        <form method="get" class="item-row-main item-row-test {% if task.active == True %} item-row-active {% endif %}">
             <div class="flexbox">
                 <span class="flex-title">{{task.title}}</span>
                 {% if task.result == "" %}
@@ -38,9 +47,9 @@
         <h4>{{test_result.title}}</h4>
         <hr class="split-title">
             <div class="log-details {% if test_result.result == 'Fail' %} log-details-fail {% endif %}">
-                {{test_result.log}}
+                {% for log in test_result.log|split_value %}
+                    <p>{{log}}</p>
+                {% endfor %}
             </div>
     </div>
 </div>
-
-

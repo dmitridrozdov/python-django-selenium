@@ -1,4 +1,5 @@
-# SelPhy
+# Shooxx
+Web automation solution. Fast. Reliable. Effective.
 
 
 ## Development server
@@ -17,7 +18,7 @@ All tests can be executed directly from the server
 
 Added 3 tests:
 1. Passed and forwarded log
-2. Passed without log (verified all links on the web site)
+2. Verified all links on the web site
 3. Failed test with the log
 
 ## UI

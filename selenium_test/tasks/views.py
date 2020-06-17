@@ -32,7 +32,8 @@ def find_most_frequent_word(data_set):
     split_it = data_set.split()
     counter = Counter(split_it)
     most_occur = counter.most_common(1)
-    return most_occur
+    word, num_times = most_occur[0]
+    return 'The most frequent word is [ %s ] which occur %d times' % (word, num_times)
 
 
 def get_most_frequent_word(title, driver, class_name):
@@ -42,10 +43,19 @@ def get_most_frequent_word(title, driver, class_name):
     return TestResult(title, 'Pass', find_most_frequent_word(all_text))
 
 
-def click_nav_link(driver, nav_text):
+def click_verify_nav_link(driver, nav_text):
     els = driver.find_elements_by_class_name('nav-link')
     time.sleep(2)
     click_web_elements_by_name(els, nav_text)
+    return "Verified link: %s" % nav_text
+
+
+def calculate_words(title):
+    driver = get_chrome_driver()
+    driver.get("http://www.metsystems.com.au/")
+    test_result = get_most_frequent_word(title, driver, 'summary-info')
+    driver.close()
+    return test_result
 
 
 def test_links(title):
@@ -55,9 +65,9 @@ def test_links(title):
     elements = driver.find_elements_by_class_name('dropdown-item-title')
     click_web_elements_by_name(elements, 'MI CORE')
     nav_links = ['SERVICES', 'CASE STUDIES', 'NEWS', 'FAQ', 'ABOUT']
-    [click_nav_link(driver, nav_link) for nav_link in nav_links]
+    result_list = [click_verify_nav_link(driver, nav_link) for nav_link in nav_links]
     driver.close()
-    return TestResult(title, 'Pass', '')
+    return TestResult(title, 'Pass', "|".join(result_list))
 
 
 def create_failed_passed_test(title):
@@ -68,7 +78,7 @@ def create_failed_passed_test(title):
         return TestResult(title, 'PASS', '')
     except Exception as e:
         driver.close()
-        return TestResult(title, 'Fail', e)
+        return TestResult(title, 'Fail', str(e))
 
 
 def cleartests(request):
@@ -87,27 +97,48 @@ def show_log(test_name):
     return Task.objects.get(test_name=test_name)
 
 
+def runtest1(request):
+    title = Task.objects.get(test_name='runtest1').title
+    test_result = calculate_words(title)
+    update_tests('runtest1', test_result)
+    return test_result
+
+
+def runtest2(request):
+    title = Task.objects.get(test_name='runtest2').title
+    test_result = test_links(title)
+    update_tests('runtest2', test_result)
+    return test_result
+
+
+def runtest3(request):
+    title = Task.objects.get(test_name='runtest3').title
+    test_result = create_failed_passed_test(title)
+    update_tests('runtest3', test_result)
+    return test_result
+
+
+def run_all(request):
+    runtest1(request)
+    runtest2(request)
+    return runtest3(request)
+
+
 def index(request):
     tasks = Task.objects.all()
     test_result = TestResult('', '', '')
 
+    if request.GET.get('runall'):
+        test_result = run_all(request)
+
     if request.GET.get('runtest1'):
-        driver = get_chrome_driver()
-        driver.get("http://www.metsystems.com.au/")
-        title = Task.objects.get(test_name='runtest1').title
-        test_result = get_most_frequent_word(title, driver, 'summary-info')
-        driver.close()
-        update_tests('runtest1', test_result)
+        test_result = runtest1(request)
 
     if request.GET.get('runtest2'):
-        title = Task.objects.get(test_name='runtest2').title
-        test_result = test_links(title)
-        update_tests('runtest2', test_result)
+        test_result = runtest2(request)
 
     if request.GET.get('runtest3'):
-        title = Task.objects.get(test_name='runtest3').title
-        test_result = create_failed_passed_test(title)
-        update_tests('runtest3', test_result)
+        test_result = runtest3(request)
 
     if request.GET.get('runtest1Log'):
         test_result = show_log('runtest1')
@@ -117,6 +148,9 @@ def index(request):
 
     if request.GET.get('runtest3Log'):
         test_result = show_log('runtest3')
+
+    if request.GET.get('clear'):
+        cleartests(request)
 
     context = {'tasks': tasks, 'test_result': test_result}
     return render(request, 'tasks/list.html', context)
