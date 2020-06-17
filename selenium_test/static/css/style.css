@@ -116,7 +116,7 @@ body {
 
 .btn-main-logo {
   background-color: #5E5E5E;
-  border: .1px solid white;
+  border: .1px solid #D1D1D1;
   border-radius: 30px;
   color: #3B3B3B;
   padding: 5px;
@@ -135,7 +135,7 @@ body {
 
 .btn-main-logo:hover {
   color: white;
-  border: .1px solid grey;
+  border: .1px solid white;
 }
 
 
