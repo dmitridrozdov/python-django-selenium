@@ -1,6 +1,7 @@
 from selenium import webdriver
 from collections import Counter
 from common_web_elements import *
+import time
 
 
 def get_chrome_driver():
@@ -35,7 +36,6 @@ def main():
 
 def click_nav_link(driver, nav_text):
     els = driver.find_elements_by_class_name('nav-link')
-    import time
     time.sleep(2)
     click_web_elements_by_name(els, nav_text)
 
@@ -66,6 +66,40 @@ def create_failed_test():
         return TestResult('FAIL', e)
 
 
+def cba_test(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.commbank.com.au/")
+        el = driver.find_element_by_css_selector('.banner-content h1')
+        test_result = 'The banner text is: [' + el.text + ']'
+        time.sleep(5)
+        driver.close()
+        return TestResult('Pass', test_result)
+    except Exception as e:
+        driver.close()
+        return TestResult('Fail', e)
+
+
+def click_by_css_selector(driver, css_selector):
+    el = driver.find_element_by_css_selector(css_selector)
+    time.sleep(2)
+    el.click()
+
+
+def cba_links(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.commbank.com.au/")
+        css_menu_list = ['a[data-target="#products"]', 'a[data-target="#support"]', 'a[data-target="#rates"]',
+                         'a[data-target="#tools"]']
+        [click_by_css_selector(driver, link) for link in css_menu_list]
+        driver.close()
+        return TestResult('Pass', '')
+    except Exception as e:
+        driver.close()
+        return TestResult('Fail', e)
+
+
 if __name__ == '__main__':
-    result = create_failed_test()
+    result = cba_links('')
     m = 2

@@ -81,6 +81,40 @@ def create_failed_passed_test(title):
         return TestResult(title, 'Fail', str(e))
 
 
+def cba_test(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.commbank.com.au/")
+        el = driver.find_element_by_css_selector('.banner-content h1')
+        test_result = 'The banner text is: [' + el.text + ']'
+        time.sleep(5)
+        driver.close()
+        return TestResult(title, 'Pass', test_result)
+    except Exception as e:
+        driver.close()
+        return TestResult(title, 'Fail', e)
+
+
+def click_by_css_selector(driver, css_selector):
+    el = driver.find_element_by_css_selector(css_selector)
+    time.sleep(2)
+    el.click()
+
+
+def cba_links(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.commbank.com.au/")
+        css_menu_list = ['a[data-target="#products"]', 'a[data-target="#support"]', 'a[data-target="#rates"]',
+                         'a[data-target="#tools"]']
+        [click_by_css_selector(driver, link) for link in css_menu_list]
+        driver.close()
+        return TestResult(title, 'Pass', 'Links verified:|' + "|".join(css_menu_list))
+    except Exception as e:
+        driver.close()
+        return TestResult(title, 'Fail', e)
+
+
 def cleartests(request):
     Task.objects.all().update(result='', log='', active=False)
     return render(request, 'tasks/list.html', {'tasks': Task.objects.all()})
@@ -118,10 +152,26 @@ def runtest3(request):
     return test_result
 
 
+def runtest4(request):
+    title = Task.objects.get(test_name='runtest4').title
+    test_result = cba_test(title)
+    update_tests('runtest4', test_result)
+    return test_result
+
+
+def runtest5(request):
+    title = Task.objects.get(test_name='runtest5').title
+    test_result = cba_links(title)
+    update_tests('runtest5', test_result)
+    return test_result
+
+
 def run_all(request):
     runtest1(request)
     runtest2(request)
-    return runtest3(request)
+    runtest3(request)
+    runtest4(request)
+    return runtest5(request)
 
 
 def index(request):
@@ -140,6 +190,12 @@ def index(request):
     if request.GET.get('runtest3'):
         test_result = runtest3(request)
 
+    if request.GET.get('runtest4'):
+        test_result = runtest4(request)
+
+    if request.GET.get('runtest5'):
+        test_result = runtest5(request)
+
     if request.GET.get('runtest1Log'):
         test_result = show_log('runtest1')
 
@@ -148,6 +204,12 @@ def index(request):
 
     if request.GET.get('runtest3Log'):
         test_result = show_log('runtest3')
+
+    if request.GET.get('runtest4Log'):
+        test_result = show_log('runtest4')
+
+    if request.GET.get('runtest5Log'):
+        test_result = show_log('runtest5')
 
     if request.GET.get('clear'):
         cleartests(request)
