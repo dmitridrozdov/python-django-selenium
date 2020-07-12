@@ -100,6 +100,42 @@ def cba_links(title):
         return TestResult('Fail', e)
 
 
+def big_commerce_request_demo(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.bigcommerce.com/")
+        el = driver.find_element_by_css_selector('.menuItem--hasThirdLevelChildren')
+        el.click()
+        click_web_element_by_class_name_and_name(driver, 'subMenu-item', 'Headless Commerce')
+        time.sleep(3)
+        click_web_element_by_css_selector_and_name(driver, 'a[role=button]', 'REQUEST A DEMO')
+        time.sleep(2)
+        input_ids = ['FirstName', 'LastName', 'Email', 'Company', 'Projected_Annual_Revenue__c', 'Phone', 'Country']
+        input_values = ['Dmytro', 'Drozdov', 'dm.drozdov@gmail.com', 'BigCommerce', "I'm not sure", '041234567', 'Australia']
+        [input_text_by_id(driver, el_id, value) for el_id, value in zip(input_ids, input_values)]
+        return TestResult('Pass', '')
+    except Exception as e:
+        driver.close()
+        return TestResult('Fail', str(e))
+
+
+def wikipedia(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.wikipedia.org/")
+        input_el = driver.find_element_by_id('searchInput')
+        input_el.send_keys('Federer')
+        time.sleep(3)
+        driver.find_element_by_css_selector('[data-jsl10n=search-input-button]').click()
+        heading = driver.find_element_by_id('firstHeading').text
+        expected_value = 'Roger Federer'
+        if heading != expected_value:
+            return TestResult('Fail', 'Incorrect header. Expected <b>' + expected_value + '</b> got <b>' + heading + '</b>')
+        return TestResult('Pass', '')
+    except Exception as e:
+        driver.close()
+        return TestResult('Fail', str(e))
+
+
 if __name__ == '__main__':
-    result = cba_links('')
-    m = 2
+    result = wikipedia('')

@@ -2,8 +2,8 @@ from django.shortcuts import render
 from selenium import webdriver
 from collections import Counter
 from .models import *
-import time
 from .TestResult import *
+import time
 
 
 # Create your views here.
@@ -115,6 +115,61 @@ def cba_links(title):
         return TestResult(title, 'Fail', e)
 
 
+def click_web_element_by_class_name_and_name(driver, css_selector, name):
+    els = driver.find_elements_by_class_name(css_selector)
+    click_web_elements_by_name(els, name)
+
+
+def click_web_element_by_css_selector_and_name(driver, css_selector, name):
+    els = driver.find_elements_by_css_selector(css_selector)
+    click_web_elements_by_name(els, name)
+
+
+def input_text_by_id(driver, id, text):
+    time.sleep(1)
+    driver.find_element_by_id(id).send_keys(text)
+
+
+def big_commerce_request_demo(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.bigcommerce.com/")
+        el = driver.find_element_by_css_selector('.menuItem--hasThirdLevelChildren')
+        el.click()
+        click_web_element_by_class_name_and_name(driver, 'subMenu-item', 'Headless Commerce')
+        time.sleep(3)
+        click_web_element_by_css_selector_and_name(driver, 'a[role=button]', 'REQUEST A DEMO')
+        time.sleep(2)
+        input_ids = ['FirstName', 'LastName', 'Email', 'Company', 'Projected_Annual_Revenue__c', 'Phone', 'Country']
+        input_values = ['Dmytro', 'Drozdov', 'dm.drozdov@gmail.com', 'BigCommerce', "I'm not sure", '041234567', 'Australia']
+        [input_text_by_id(driver, el_id, value) for el_id, value in zip(input_ids, input_values)]
+        driver.close()
+        return TestResult(title, 'Pass', 'Requested Demo from BigCommerce web site')
+    except Exception as e:
+        driver.close()
+        return TestResult(title, 'Fail', str(e))
+
+
+def wikipedia(title):
+    try:
+        driver = get_chrome_driver()
+        driver.get("https://www.wikipedia.org/")
+        input_el = driver.find_element_by_id('searchInput')
+        input_el.send_keys('Federer')
+        time.sleep(3)
+        driver.find_element_by_css_selector('[data-jsl10n=search-input-button]').click()
+        css_header = 'firstHeading'
+        heading = driver.find_element_by_id(css_header).text
+        expected_value = 'Roger Federer11'
+        driver.close()
+        if heading != expected_value:
+            return TestResult(title, 'Fail', 'Incorrect header. Expected: ' + expected_value + ' got: ' + heading)
+        return TestResult(title, 'Pass', 'The header ' + css_header + ' is correct')
+    except Exception as e:
+        driver.close()
+        return TestResult(title, 'Fail', str(e))
+
+
 def cleartests(request):
     Task.objects.all().update(result='', log='', active=False)
     return render(request, 'tasks/list.html', {'tasks': Task.objects.all()})
@@ -166,12 +221,28 @@ def runtest5(request):
     return test_result
 
 
+def runtest6(request):
+    title = Task.objects.get(test_name='runtest6').title
+    test_result = big_commerce_request_demo(title)
+    update_tests('runtest6', test_result)
+    return test_result
+
+
+def runtest7(request):
+    title = Task.objects.get(test_name='runtest7').title
+    test_result = wikipedia(title)
+    update_tests('runtest7', test_result)
+    return test_result
+
+
 def run_all(request):
     runtest1(request)
     runtest2(request)
     runtest3(request)
     runtest4(request)
-    return runtest5(request)
+    runtest5(request)
+    runtest6(request)
+    return runtest7(request)
 
 
 def index(request):
@@ -196,6 +267,12 @@ def index(request):
     if request.GET.get('runtest5'):
         test_result = runtest5(request)
 
+    if request.GET.get('runtest6'):
+        test_result = runtest6(request)
+
+    if request.GET.get('runtest7'):
+        test_result = runtest7(request)
+
     if request.GET.get('runtest1Log'):
         test_result = show_log('runtest1')
 
@@ -210,6 +287,12 @@ def index(request):
 
     if request.GET.get('runtest5Log'):
         test_result = show_log('runtest5')
+
+    if request.GET.get('runtest6Log'):
+        test_result = show_log('runtest6')
+
+    if request.GET.get('runtest7Log'):
+        test_result = show_log('runtest7')
 
     if request.GET.get('clear'):
         cleartests(request)
