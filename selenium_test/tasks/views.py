@@ -19,7 +19,9 @@ def find_index_web_elements_list(web_elements, name):
 
 def click_web_elements_by_name(web_elements, name):
     index = find_index_web_elements_list(web_elements, name)
+    time.sleep(1)
     web_elements[index].click()
+    time.sleep(1)
 
 
 def get_chrome_driver():
@@ -50,48 +52,39 @@ def click_verify_nav_link(driver, nav_text):
     return "Verified link: %s" % nav_text
 
 
-def calculate_words(title):
-    driver = get_chrome_driver()
+def calculate_words(title, driver):
     driver.get("http://www.metsystems.com.au/")
     test_result = get_most_frequent_word(title, driver, 'summary-info')
-    driver.close()
     return test_result
 
 
-def test_links(title):
-    driver = get_chrome_driver()
+def test_links(title, driver):
     driver.get("http://www.metsystems.com.au/")
     driver.find_element_by_xpath("//*[text()=' Products ']").click()
     elements = driver.find_elements_by_class_name('dropdown-item-title')
     click_web_elements_by_name(elements, 'MI CORE')
     nav_links = ['SERVICES', 'CASE STUDIES', 'NEWS', 'FAQ', 'ABOUT']
     result_list = [click_verify_nav_link(driver, nav_link) for nav_link in nav_links]
-    driver.close()
     return TestResult(title, 'Pass', "|".join(result_list))
 
 
-def create_failed_passed_test(title):
-    driver = get_chrome_driver()
+def create_failed_passed_test(title, driver):
     try:
         driver.get("http://www.metsystems.com.au/")
         driver.find_element_by_xpath("//*[text()=' Productsss ']")
         return TestResult(title, 'PASS', '')
     except Exception as e:
-        driver.close()
         return TestResult(title, 'Fail', str(e))
 
 
-def cba_test(title):
+def cba_test(title, driver):
     try:
-        driver = get_chrome_driver()
         driver.get("https://www.commbank.com.au/")
         el = driver.find_element_by_css_selector('.banner-content h1')
         test_result = 'The banner text is: [' + el.text + ']'
         time.sleep(5)
-        driver.close()
         return TestResult(title, 'Pass', test_result)
     except Exception as e:
-        driver.close()
         return TestResult(title, 'Fail', e)
 
 
@@ -101,17 +94,14 @@ def click_by_css_selector(driver, css_selector):
     el.click()
 
 
-def cba_links(title):
+def cba_links(title, driver):
     try:
-        driver = get_chrome_driver()
         driver.get("https://www.commbank.com.au/")
         css_menu_list = ['a[data-target="#products"]', 'a[data-target="#support"]', 'a[data-target="#rates"]',
                          'a[data-target="#tools"]']
         [click_by_css_selector(driver, link) for link in css_menu_list]
-        driver.close()
         return TestResult(title, 'Pass', 'Links verified:|' + "|".join(css_menu_list))
     except Exception as e:
-        driver.close()
         return TestResult(title, 'Fail', e)
 
 
@@ -130,29 +120,23 @@ def input_text_by_id(driver, id, text):
     driver.find_element_by_id(id).send_keys(text)
 
 
-def big_commerce_request_demo(title):
+def big_commerce_request_demo(title, driver):
     try:
-        driver = get_chrome_driver()
         driver.get("https://www.bigcommerce.com/")
         el = driver.find_element_by_css_selector('.menuItem--hasThirdLevelChildren')
         el.click()
-        click_web_element_by_class_name_and_name(driver, 'subMenu-item', 'Headless Commerce')
-        time.sleep(3)
+        click_web_element_by_class_name_and_name(driver, 'subMenu-item111', 'Headless Commerce')
         click_web_element_by_css_selector_and_name(driver, 'a[role=button]', 'REQUEST A DEMO')
-        time.sleep(2)
         input_ids = ['FirstName', 'LastName', 'Email', 'Company', 'Projected_Annual_Revenue__c', 'Phone', 'Country']
         input_values = ['Dmytro', 'Drozdov', 'dm.drozdov@gmail.com', 'BigCommerce', "I'm not sure", '041234567', 'Australia']
         [input_text_by_id(driver, el_id, value) for el_id, value in zip(input_ids, input_values)]
-        driver.close()
         return TestResult(title, 'Pass', 'Requested Demo from BigCommerce web site')
     except Exception as e:
-        driver.close()
         return TestResult(title, 'Fail', str(e))
 
 
-def wikipedia(title):
+def wikipedia(title, driver):
     try:
-        driver = get_chrome_driver()
         driver.get("https://www.wikipedia.org/")
         input_el = driver.find_element_by_id('searchInput')
         input_el.send_keys('Federer')
@@ -160,13 +144,11 @@ def wikipedia(title):
         driver.find_element_by_css_selector('[data-jsl10n=search-input-button]').click()
         css_header = 'firstHeading'
         heading = driver.find_element_by_id(css_header).text
-        expected_value = 'Roger Federer11'
-        driver.close()
+        expected_value = 'Roger Federer'
         if heading != expected_value:
             return TestResult(title, 'Fail', 'Incorrect header. Expected: ' + expected_value + ' got: ' + heading)
         return TestResult(title, 'Pass', 'The header ' + css_header + ' is correct')
     except Exception as e:
-        driver.close()
         return TestResult(title, 'Fail', str(e))
 
 
@@ -186,92 +168,42 @@ def show_log(test_name):
     return Task.objects.get(test_name=test_name)
 
 
-def runtest1(request):
-    title = Task.objects.get(test_name='runtest1').title
-    test_result = calculate_words(title)
-    update_tests('runtest1', test_result)
+def run_all(test_list, func_list):
+    web_driver = get_chrome_driver()
+    [execute_test(web_driver, test_name, func) for test_name, func in zip(test_list, func_list)]
+    web_driver.close()
+
+
+def execute_test(web_driver, test_name, func):
+    title = Task.objects.get(test_name=test_name).title
+    test_result = func(title, web_driver)
+    update_tests(test_name, test_result)
     return test_result
 
 
-def runtest2(request):
-    title = Task.objects.get(test_name='runtest2').title
-    test_result = test_links(title)
-    update_tests('runtest2', test_result)
-    return test_result
+def execute_test_by_request(request, test_name, func):
+    if request.GET.get(test_name):
+        web_driver = get_chrome_driver()
+        execute_test(web_driver, test_name, func)
+        web_driver.close()
 
 
-def runtest3(request):
-    title = Task.objects.get(test_name='runtest3').title
-    test_result = create_failed_passed_test(title)
-    update_tests('runtest3', test_result)
-    return test_result
-
-
-def runtest4(request):
-    title = Task.objects.get(test_name='runtest4').title
-    test_result = cba_test(title)
-    update_tests('runtest4', test_result)
-    return test_result
-
-
-def runtest5(request):
-    title = Task.objects.get(test_name='runtest5').title
-    test_result = cba_links(title)
-    update_tests('runtest5', test_result)
-    return test_result
-
-
-def runtest6(request):
-    title = Task.objects.get(test_name='runtest6').title
-    test_result = big_commerce_request_demo(title)
-    update_tests('runtest6', test_result)
-    return test_result
-
-
-def runtest7(request):
-    title = Task.objects.get(test_name='runtest7').title
-    test_result = wikipedia(title)
-    update_tests('runtest7', test_result)
-    return test_result
-
-
-def run_all(request):
-    runtest1(request)
-    runtest2(request)
-    runtest3(request)
-    runtest4(request)
-    runtest5(request)
-    runtest6(request)
-    return runtest7(request)
+def add_log_suffix(name):
+    return name + 'Log'
 
 
 def index(request):
-    tasks = Task.objects.all()
     test_result = TestResult('', '', '')
 
+    tests = ['runtest1', 'runtest2', 'runtest3', 'runtest4', 'runtest5', 'runtest6', 'runtest7']
+    logs = [add_log_suffix(name) for name in tests]
+    funcs = [calculate_words, test_links, create_failed_passed_test, cba_test, cba_links, big_commerce_request_demo, wikipedia]
+
+    test_result = [execute_test_by_request(request, test_name, func) for test_name, func in zip(tests, funcs)]
+    # test_result = [show_log(request, log_name, test_name) for log_name, test_name in zip(logs, tests)]
+
     if request.GET.get('runall'):
-        test_result = run_all(request)
-
-    if request.GET.get('runtest1'):
-        test_result = runtest1(request)
-
-    if request.GET.get('runtest2'):
-        test_result = runtest2(request)
-
-    if request.GET.get('runtest3'):
-        test_result = runtest3(request)
-
-    if request.GET.get('runtest4'):
-        test_result = runtest4(request)
-
-    if request.GET.get('runtest5'):
-        test_result = runtest5(request)
-
-    if request.GET.get('runtest6'):
-        test_result = runtest6(request)
-
-    if request.GET.get('runtest7'):
-        test_result = runtest7(request)
+        run_all(tests, funcs)
 
     if request.GET.get('runtest1Log'):
         test_result = show_log('runtest1')
@@ -297,5 +229,6 @@ def index(request):
     if request.GET.get('clear'):
         cleartests(request)
 
+    tasks = Task.objects.all()
     context = {'tasks': tasks, 'test_result': test_result}
     return render(request, 'tasks/list.html', context)

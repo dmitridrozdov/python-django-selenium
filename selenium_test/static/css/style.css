@@ -55,13 +55,13 @@ body {
 }
 
 .item-row-active {
-    border: 1px solid #858585;
+    background-color: #F0F0F0;
 }
 
 .btn-main {
   background-color: white;
   border: .1px solid #CCCCCC;
-  border-radius: 30px;
+  border-radius: 5px;
   color: #3B3B3B;
   padding: 5px;
   text-align: center;
@@ -81,23 +81,25 @@ body {
 }
 
 .btn-pass {
-    border-color: #00A115;
-    color: #00A115;
+    background-color: #00A115;
+    color: white;
 }
 
 .btn-pass:hover {
-    border-color: #00590C;
-    color: #00590C;
+    background-color: #00750F;
+    color: white;
+    border: .1px solid white;
 }
 
 .btn-fail {
-    border-color: #D90065;
-    color: #D90065;
+    background-color: #D90065;
+    color: white;
 }
 
 .btn-fail:hover {
-    border-color: #85003E;
-    color: #85003E;
+    background-color: #AD0051;
+    color: white;
+    border: .1px solid white;
 }
 
 .btn-run {
@@ -117,7 +119,7 @@ body {
 .btn-main-logo {
   background-color: #5E5E5E;
   border: .1px solid #D1D1D1;
-  border-radius: 30px;
+  border-radius: 5px;
   color: #3B3B3B;
   padding: 5px;
   text-align: center;
@@ -152,7 +154,7 @@ body {
 
 .flexbox-logo {
   display: flex;
-  font-family: 'Special Elite', cursive;
+  font-family: 'Montserrat';
   font-size: 30px;
   padding: 10px;
   padding-left: 50px;
