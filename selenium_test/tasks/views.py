@@ -123,9 +123,8 @@ def input_text_by_id(driver, id, text):
 def big_commerce_request_demo(title, driver):
     try:
         driver.get("https://www.bigcommerce.com/")
-        el = driver.find_element_by_css_selector('.menuItem--hasThirdLevelChildren')
-        el.click()
-        click_web_element_by_class_name_and_name(driver, 'subMenu-item111', 'Headless Commerce')
+        driver.find_element_by_css_selector('.menuItem--hasThirdLevelChildren').click()
+        click_web_element_by_class_name_and_name(driver, 'subMenu-item', 'Headless Commerce')
         click_web_element_by_css_selector_and_name(driver, 'a[role=button]', 'REQUEST A DEMO')
         input_ids = ['FirstName', 'LastName', 'Email', 'Company', 'Projected_Annual_Revenue__c', 'Phone', 'Country']
         input_values = ['Dmytro', 'Drozdov', 'dm.drozdov@gmail.com', 'BigCommerce', "I'm not sure", '041234567', 'Australia']
