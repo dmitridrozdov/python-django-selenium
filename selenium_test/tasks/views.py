@@ -4,6 +4,7 @@ from collections import Counter
 from .models import *
 from .TestResult import *
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 # Create your views here.
@@ -27,7 +28,9 @@ def click_web_elements_by_name(web_elements, name):
 def get_chrome_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--kiosk")
-    return webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+    # return webdriver.Chrome()
+    return driver
 
 
 def find_most_frequent_word(data_set):

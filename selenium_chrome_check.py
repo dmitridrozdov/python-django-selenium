@@ -1,13 +1,16 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from collections import Counter
 from common_web_elements import *
 import time
 
 
 def get_chrome_driver():
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     options.add_argument("--kiosk")
-    return webdriver.Chrome(chrome_options=options)
+    # return webdriver.Chrome(chrome_options=options)
+    return driver
 
 
 def find_most_frequent_word(data_set):
